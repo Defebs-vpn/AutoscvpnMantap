@@ -1,0 +1,29 @@
+# AutoscvpnMantap SSH WebSocket Service
+# Created: 2025-02-09 14:59:29 UTC
+# Author: Defebs-vpn
+
+[Unit]
+Description=OpenSSH WebSocket Service
+Documentation=https://github.com/Defebs-vpn/AutoscvpnMantap
+After=network.target nss-lookup.target
+
+[Service]
+Type=simple
+User=root
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ExecStart=/usr/bin/python3 -O /etc/AutoscvpnMantap/ssh-ws/proxy.py
+TimeoutStopSec=5
+KillMode=mixed
+Restart=always
+RestartSec=2
+LimitNOFILE=10000
+MemoryAccounting=true
+MemoryHigh=1024M
+MemoryMax=1024M
+CPUAccounting=true
+CPUQuota=100%
+
+[Install]
+WantedBy=multi-user.target

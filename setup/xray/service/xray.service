@@ -1,0 +1,48 @@
+# AutoscvpnMantap Xray Service
+# Created: 2025-02-09 15:02:50 UTC
+# Author: Defebs-vpn
+
+[Unit]
+Description=Xray Service
+Documentation=https://github.com/XTLS/Xray-core
+After=network.target nss-lookup.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW
+NoNewPrivileges=true
+ExecStart=/usr/local/bin/xray run -config /etc/AutoscvpnMantap/xray/config.json
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=3
+RestartPreventExitStatus=23
+LimitNPROC=10000
+LimitNOFILE=1000000
+
+# Security Settings
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/etc/AutoscvpnMantap/xray/
+ReadOnlyPaths=/etc/AutoscvpnMantap/cert/
+
+# Resource Management
+MemoryAccounting=true
+MemoryHigh=2G
+MemoryMax=3G
+CPUAccounting=true
+CPUQuota=200%
+IOAccounting=true
+IPAccounting=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=xray
+
+[Install]
+WantedBy=multi-user.target
