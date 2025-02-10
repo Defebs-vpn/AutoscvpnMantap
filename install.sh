@@ -1,6 +1,6 @@
 #!/bin/bash
 # AutoscvpnMantap Main Installation Script
-# Created: 2025-02-10 09:21:31 UTC
+# Created: 2025-02-10 11:48:19 UTC
 # Author: Defebs-vpn
 
 # Define colors
@@ -14,7 +14,7 @@ CYAN='\e[36m'
 
 # Base directory
 BASE_DIR="/etc/AutoscvpnMantap"
-CURRENT_DATE="2025-02-10 09:21:31"
+CURRENT_DATE="2025-02-10 11:48:19"
 CURRENT_USER="Defebs-vpn"
 
 # Function to display banner
@@ -27,7 +27,6 @@ show_banner() {
     echo -e " ${YELLOW}User: $CURRENT_USER${NC}"
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 }
-sleep 5
 
 # Function to create directory structure
 create_directories() {
@@ -209,7 +208,7 @@ configure_system() {
     echo -e "${GREEN}System settings configured successfully${NC}"
 }
 
-# Function to setup initial users and permissions
+# Function to setup users and permissions
 setup_users() {
     echo -e "${YELLOW}Setting up users and permissions...${NC}"
     
@@ -256,7 +255,7 @@ setup_firewall() {
     iptables-save > /etc/iptables.rules
     
     # Create restore script
-    cat > /etc/network/if-pre-up.d/iptables-restore << EOF
+    cat > /etc/network/if-pre-up.d/iptables-restore << 'EOF'
 #!/bin/sh
 iptables-restore < /etc/iptables.rules
 EOF
@@ -274,7 +273,7 @@ setup_cron_jobs() {
     crontab -l > /tmp/crontab.bak 2>/dev/null
     
     # Add new cron jobs
-    cat >> /tmp/crontab.bak << EOF
+    cat >> /tmp/crontab.bak << 'EOF'
 # AutoscvpnMantap Cron Jobs
 0 0 * * * /etc/AutoscvpnMantap/utils/cert-installer.sh renew >/dev/null 2>&1
 0 */6 * * * /etc/AutoscvpnMantap/utils/system-check.sh >/dev/null 2>&1
@@ -297,7 +296,7 @@ setup_logging() {
     mkdir -p $BASE_DIR/logs/{ssh,xray,nginx,system}
     
     # Setup log rotation
-    cat > /etc/logrotate.d/autoscvpn << EOF
+    cat > /etc/logrotate.d/autoscvpn << 'EOF'
 $BASE_DIR/logs/ssh/*.log {
     daily
     rotate 7
@@ -350,7 +349,7 @@ main_install() {
     if [ "$(id -u)" != "0" ]; then
         echo -e "${RED}Error: This script must be run as root${NC}"
         exit 1
-    }
+    fi
     
     # Begin installation
     create_directories
